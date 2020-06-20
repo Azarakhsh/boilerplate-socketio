@@ -2,7 +2,6 @@ const session     = require('express-session');
 const mongo       = require('mongodb').MongoClient;
 const passport    = require('passport');
 const GitHubStrategy = require('passport-github').Strategy;
-
 module.exports = function (app, db) {
   
     app.use(passport.initialize());
@@ -24,7 +23,7 @@ module.exports = function (app, db) {
     passport.use(new GitHubStrategy({
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "https://buttercup-delete.gomix.me/auth/github/callback"
+        callbackURL: "http://127.0.0.1:3000/auth/github/callback"
       },
       function(accessToken, refreshToken, profile, cb) {
           db.collection('chatusers').findAndModify(

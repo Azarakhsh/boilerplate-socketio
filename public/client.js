@@ -10,6 +10,7 @@ $( document ).ready(function() {
     return false; // prevent form submit from refreshing page
   });
   
-  
+  /*plobal io*/
+  var socket = io()
   
 });

@@ -2,7 +2,7 @@
 
 const express     = require('express');
 const session     = require('express-session');
-const bodyParser  = require('body-parser');
+// const bodyParser  = require('body-parser');
 const fccTesting  = require('./freeCodeCamp/fcctesting.js');
 const auth        = require('./app/auth.js');
 const routes      = require('./app/routes.js');
@@ -12,14 +12,20 @@ const cookieParser= require('cookie-parser')
 const app         = express();
 const http        = require('http').Server(app);
 const sessionStore= new session.MemoryStore();
+require('dotenv').config()
+const io = require('socket.io')(http)
+
+io.on('connection', socket => {
+  console.log('A user has connected')
+})
 
 
 fccTesting(app); //For FCC testing purposes
 
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug')
 
 app.use(session({
@@ -31,9 +37,9 @@ app.use(session({
 }));
 
 
-mongo.connect(process.env.DATABASE, (err, db) => {
+mongo.connect(process.env.DATABASE, { useUnifiedTopology: true } , (err, database) => {
     if(err) console.log('Database error: ' + err);
-  
+    let db = database.db('test')
     auth(app, db);
     routes(app, db);
       
